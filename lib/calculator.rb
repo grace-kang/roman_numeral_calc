@@ -18,9 +18,13 @@ class Calculator
     end
 
     arr.each_with_index do |item, index|
-      if item == 'I' && arr[index+1] && arr[index+1] != 'I'
-        decimal += invert[arr[index+1]] - 1
-        arr.delete_at(index+1)
+      if arr[index+1]
+        if invert[item] < invert[arr[index+1]]
+          decimal += invert[arr[index+1]] - invert[item]
+          arr.delete_at(index+1)
+        else
+          decimal += invert[item]
+        end
       else
         decimal += invert[item]
       end
@@ -46,9 +50,21 @@ class Calculator
     end
 
     CONVERSION.reverse_each do |dec, rom|
-      if CONVERSION.keys.include? int+1
+      if int == 4 or int == 9
         str += "I#{CONVERSION[int+1]}"
         return str
+      elsif int/10 == 4 or int/10 == 9
+        str += "X#{CONVERSION[(int/10 * 10) + 10]}"
+        int -= int/10 * 10
+        if int == 0
+          return str
+        end
+      elsif int/100 == 4 or int/100 == 9
+        str += "C#{CONVERSION[(int/100 * 100) + 100]}"
+        int -= int/100 * 100
+        if int == 0
+          return str
+        end
       else
         str += rom * (int / dec)
         int -= dec * (int / dec) unless (int / dec) == 0
